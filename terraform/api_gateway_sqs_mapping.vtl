@@ -1,0 +1,10 @@
+#set($bodyEscaped = $util.escapeJavaScript($input.body))
+#set($sourceIp = $context.identity.sourceIp)
+#set($headerParams = $input.params().header)
+#set($headerStr = "")
+#foreach($key in $headerParams.keySet())
+#if($headerStr != "")#set($headerStr = $headerStr + ",")#end
+#set($headerStr = $headerStr + '"' + $util.escapeJavaScript($key) + '":"' + $util.escapeJavaScript($headerParams.get($key)) + '"')
+#end
+#set($messageBody = '{"body":"' + $bodyEscaped + '","headers":{' + $headerStr + '},"sourceIp":"' + $sourceIp + '"}')
+Action=SendMessage&MessageBody=$util.urlEncode($messageBody)
