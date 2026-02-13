@@ -23,12 +23,12 @@ output "sqs_queue_name" {
   value       = aws_sqs_queue.api_requests.name
 }
 
-output "lambda_consumer_function_name" {
-  description = "Name of the Lambda consumer function"
-  value       = aws_lambda_function.sqs_consumer.function_name
-}
+# output "lambda_consumer_function_name" {
+#   description = "Name of the Lambda consumer function"
+#   value       = aws_lambda_function.sqs_consumer.function_name
+# }
 
-output "lambda_consumer_function_arn" {
-  description = "ARN of the Lambda consumer function"
-  value       = aws_lambda_function.sqs_consumer.arn
-}
+# output "lambda_consumer_function_arn" {
+#   description = "ARN of the Lambda consumer function"
+#   value       = aws_lambda_function.sqs_consumer.arn
+# }

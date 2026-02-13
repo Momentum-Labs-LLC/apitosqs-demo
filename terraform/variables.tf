@@ -45,3 +45,15 @@ variable "api_key" {
   type        = string
   default     = ""
 }
+
+variable "api_allowed_source_ips" {
+  description = "List of CIDR blocks allowed to invoke the API (e.g. [\"1.2.3.4/32\", \"10.0.0.0/8\"]). Empty = no IP restriction."
+  type        = list(string)
+  sensitive   = true
+}
+
+variable "aws_account_id" {
+  description = "AWS account ID"
+  type        = string
+  sensitive   = true
+}

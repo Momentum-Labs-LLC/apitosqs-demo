@@ -1,6 +1,7 @@
 # IAM role for API Gateway to call SQS SendMessage
 resource "aws_iam_role" "api_gateway_sqs" {
-  name = "${var.project_name}-api-gateway-sqs-role"
+  provider = aws.member
+  name     = "${var.project_name}-api-gateway-sqs-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -17,8 +18,9 @@ resource "aws_iam_role" "api_gateway_sqs" {
 }
 
 resource "aws_iam_role_policy" "api_gateway_sqs_send" {
-  name = "sqs-send-message"
-  role = aws_iam_role.api_gateway_sqs.id
+  provider = aws.member
+  name     = "sqs-send-message"
+  role     = aws_iam_role.api_gateway_sqs.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -33,41 +35,41 @@ resource "aws_iam_role_policy" "api_gateway_sqs_send" {
 }
 
 # IAM role for Lambda consumer (image-based) to read from SQS
-resource "aws_iam_role" "lambda_consumer" {
-  name = "${var.project_name}-lambda-consumer-role"
+# resource "aws_iam_role" "lambda_consumer" {
+#   name = "${var.project_name}-lambda-consumer-role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Principal = {
+#           Service = "lambda.amazonaws.com"
+#         }
+#         Action = "sts:AssumeRole"
+#       }
+#     ]
+#   })
+# }
 
-# Lambda: CloudWatch Logs + SQS consume
-resource "aws_iam_role_policy" "lambda_consumer" {
-  name = "lambda-consumer-sqs-logs"
-  role = aws_iam_role.lambda_consumer.id
+# # Lambda: CloudWatch Logs + SQS consume
+# resource "aws_iam_role_policy" "lambda_consumer" {
+#   name = "lambda-consumer-sqs-logs"
+#   role = aws_iam_role.lambda_consumer.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
-        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${var.project_name}-sqs-consumer:*"
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes"]
-        Resource = aws_sqs_queue.api_requests.arn
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect   = "Allow"
+#         Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+#         Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${var.project_name}-sqs-consumer:*"
+#       },
+#       {
+#         Effect   = "Allow"
+#         Action   = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes"]
+#         Resource = aws_sqs_queue.api_requests.arn
+#       }
+#     ]
+#   })
+# }
